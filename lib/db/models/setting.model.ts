@@ -1,5 +1,5 @@
 import { ISettingInput } from '@/types'
-import { Document, Model, model, models, Schema } from 'mongoose'
+import mongoose, { Document, Model, model, Schema } from 'mongoose'
 
 export interface ISetting extends Document, ISettingInput {
   _id: string
@@ -101,7 +101,7 @@ const settingSchema = new Schema<ISetting>(
 )
 
 const Setting =
-  (models.Setting as Model<ISetting>) ||
+  (((mongoose.models as unknown) as { Setting?: Model<ISetting> }).Setting as Model<ISetting>) ||
   model<ISetting>('Setting', settingSchema)
 
 export default Setting

@@ -33,7 +33,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import CheckoutFooter from './checkout-footer'
-import { ShippingAddress } from '@/types'
+import { ShippingAddress, OrderItem } from '@/types'
 import useIsMounted from '@/hooks/use-is-mounted'
 import Link from 'next/link'
 import useCartStore from '@/hooks/use-cart-store'
@@ -64,12 +64,24 @@ const shippingAddressDefaultValues =
 const CheckoutForm = () => {
   const { toast } = useToast()
   const router = useRouter()
+  type DeliveryDate = {
+    name: string
+    daysToDeliver: number
+    freeShippingMinPrice?: number
+    shippingPrice: number
+  }
+
   const {
     setting: {
       site,
-      availablePaymentMethods,
+      availablePaymentMethods = [],
       defaultPaymentMethod,
-      availableDeliveryDates,
+      availableDeliveryDates = [],
+    } = {} as {
+      site?: { name?: string }
+      availablePaymentMethods?: { name: string }[]
+      defaultPaymentMethod?: string
+      availableDeliveryDates?: DeliveryDate[]
     },
   } = useSettingStore()
 
@@ -120,12 +132,16 @@ const CheckoutForm = () => {
     useState<boolean>(false)
 
   const handlePlaceOrder = async () => {
+    const ddIndex = deliveryDateIndex ?? 0
+    const candidate = (availableDeliveryDates as DeliveryDate[] | undefined)?.[ddIndex]
+    const expectedDeliveryDate = candidate?.daysToDeliver !== undefined
+      ? calculateFutureDate(candidate.daysToDeliver)
+      : undefined
+
     const res = await createOrder({
       items,
       shippingAddress,
-      expectedDeliveryDate: calculateFutureDate(
-        availableDeliveryDates[deliveryDateIndex!].daysToDeliver
-      ),
+      expectedDeliveryDate,
       deliveryDateIndex,
       paymentMethod,
       itemsPrice,
@@ -193,7 +209,7 @@ const CheckoutForm = () => {
               Place Your Order
             </Button>
             <p className='text-xs text-center py-2'>
-              By placing your order, you agree to {site.name}&apos;s{' '}
+              By placing your order, you agree to {site?.name ?? ''}&apos;s{' '}
               <Link href='/page/privacy-policy'>privacy notice</Link> and
               <Link href='/page/conditions-of-use'> conditions of use</Link>.
             </p>
@@ -454,7 +470,7 @@ const CheckoutForm = () => {
               <>
                 <div className='flex text-primary text-lg font-bold my-2'>
                   <span className='w-8'>2 </span>
-                  <span>Choose a payment method</span>
+                  <span></span>
                 </div>
                 <Card className='md:ml-8 my-4'>
                   <CardContent className='p-4'>
@@ -462,7 +478,7 @@ const CheckoutForm = () => {
                       value={paymentMethod}
                       onValueChange={(value) => setPaymentMethod(value)}
                     >
-                      {availablePaymentMethods.map((pm) => (
+                      {availablePaymentMethods.map((pm: { name: string }) => (
                         <div key={pm.name} className='flex items-center py-1 '>
                           <RadioGroupItem
                             value={pm.name}
@@ -476,6 +492,19 @@ const CheckoutForm = () => {
                           </Label>
                         </div>
                       ))}
+                      {/* Add MTN Mobile Money as a draft payment option */}
+                      <div key="MTN Mobile Money" className='flex items-center py-1 '>
+                        <RadioGroupItem
+                          value="MTN Mobile Money"
+                          id="payment-mtn-mobile-money"
+                        />
+                        <Label
+                          className='font-bold pl-2 cursor-pointer'
+                          htmlFor="payment-mtn-mobile-money"
+                        >
+                          MTN Mobile Money (Draft)
+                        </Label>
+                      </div>
                     </RadioGroup>
                   </CardContent>
                   <CardFooter className='p-4'>
@@ -516,7 +545,7 @@ const CheckoutForm = () => {
                     }
                   </p>
                   <ul>
-                    {items.map((item, _index) => (
+                    {items.map((item: OrderItem, _index: number) => (
                       <li key={_index}>
                         {item.name} x {item.quantity} = {item.price}
                       </li>
@@ -560,8 +589,8 @@ const CheckoutForm = () => {
                     </p>
                     <div className='grid md:grid-cols-2 gap-6'>
                       <div>
-                        {items.map((item, _index) => (
-                          <div key={_index} className='flex gap-4 py-2'>
+              {items.map((item: OrderItem, _index: number) => (
+                <div key={_index} className='flex gap-4 py-2'>
                             <div className='relative w-16 h-16'>
                               <Image
                                 src={item.image}
@@ -584,7 +613,7 @@ const CheckoutForm = () => {
 
                               <Select
                                 value={item.quantity.toString()}
-                                onValueChange={(value) => {
+                                onValueChange={(value: string) => {
                                   if (value === '0') removeItem(item)
                                   else updateItem(item, Number(value))
                                 }}
@@ -597,7 +626,7 @@ const CheckoutForm = () => {
                                 <SelectContent position='popper'>
                                   {Array.from({
                                     length: item.countInStock,
-                                  }).map((_, i) => (
+                                  }).map((_: unknown, i: number) => (
                                     <SelectItem key={i + 1} value={`${i + 1}`}>
                                       {i + 1}
                                     </SelectItem>
@@ -615,54 +644,46 @@ const CheckoutForm = () => {
                         <div className=' font-bold'>
                           <p className='mb-2'> Choose a shipping speed:</p>
 
-                          <ul>
-                            <RadioGroup
-                              value={
-                                availableDeliveryDates[deliveryDateIndex!].name
-                              }
-                              onValueChange={(value) =>
-                                setDeliveryDateIndex(
-                                  availableDeliveryDates.findIndex(
-                                    (address) => address.name === value
-                                  )!
-                                )
-                              }
-                            >
-                              {availableDeliveryDates.map((dd) => (
-                                <div key={dd.name} className='flex'>
-                                  <RadioGroupItem
-                                    value={dd.name}
-                                    id={`address-${dd.name}`}
-                                  />
-                                  <Label
-                                    className='pl-2 space-y-2 cursor-pointer'
-                                    htmlFor={`address-${dd.name}`}
-                                  >
-                                    <div className='text-green-700 font-semibold'>
-                                      {
-                                        formatDateTime(
-                                          calculateFutureDate(dd.daysToDeliver)
-                                        ).dateOnly
-                                      }
-                                    </div>
-                                    <div>
-                                      {(dd.freeShippingMinPrice > 0 &&
-                                      itemsPrice >= dd.freeShippingMinPrice
-                                        ? 0
-                                        : dd.shippingPrice) === 0 ? (
-                                        'FREE Shipping'
-                                      ) : (
-                                        <ProductPrice
-                                          price={dd.shippingPrice}
-                                          plain
-                                        />
-                                      )}
-                                    </div>
-                                  </Label>
-                                </div>
-                              ))}
-                            </RadioGroup>
-                          </ul>
+                          <p className='mb-2'> Choose a shipping speed:</p>
+                          <RadioGroup
+                            value={
+                              (availableDeliveryDates as DeliveryDate[])[deliveryDateIndex!].name
+                                }
+                                onValueChange={(value: string) =>
+                                  setDeliveryDateIndex(
+                                    (availableDeliveryDates as DeliveryDate[]).findIndex(
+                                      (address) => address.name === value
+                                    )!
+                                  )
+                                }
+                          >
+                                {(availableDeliveryDates as DeliveryDate[]).map((dd) => (
+                                  <div key={dd.name} className='flex'>
+                                    <RadioGroupItem
+                                      value={dd.name}
+                                      id={`address-${dd.name}`}
+                                    />
+                                    <Label
+                                      className='pl-2 space-y-2 cursor-pointer'
+                                      htmlFor={`address-${dd.name}`}
+                                    >
+                                      <div className='text-green-700 font-semibold'>
+                                        {
+                                          formatDateTime(
+                                            calculateFutureDate(dd.daysToDeliver)
+                                          ).dateOnly
+                                        }
+                                      </div>
+                                      <div>
+                                        {(dd.freeShippingMinPrice ?? 0) > 0 &&
+                                        itemsPrice >= (dd.freeShippingMinPrice ?? 0)
+                                          ? 'FREE Shipping'
+                                          : <ProductPrice price={dd.shippingPrice} plain />}
+                                      </div>
+                                    </Label>
+                                  </div>
+                                ))}
+                          </RadioGroup>
                         </div>
                       </div>
                     </div>
@@ -693,9 +714,7 @@ const CheckoutForm = () => {
                     </p>
                     <p className='text-xs'>
                       {' '}
-                      By placing your order, you agree to {
-                        site.name
-                      }&apos;s{' '}
+                      By placing your order, you agree to {site?.name ?? ''}&apos;s{' '}
                       <Link href='/page/privacy-policy'>privacy notice</Link>{' '}
                       and
                       <Link href='/page/conditions-of-use'>
@@ -718,4 +737,5 @@ const CheckoutForm = () => {
     </main>
   )
 }
+
 export default CheckoutForm

@@ -1,5 +1,5 @@
 import { IUserInput } from '@/types'
-import { Document, Model, model, models, Schema } from 'mongoose'
+import mongoose, { Document, Model, model, Schema } from 'mongoose'
 
 export interface IUser extends Document, IUserInput {
   _id: string
@@ -21,6 +21,8 @@ const userSchema = new Schema<IUser>(
   }
 )
 
-const User = (models.User as Model<IUser>) || model<IUser>('User', userSchema)
+const User =
+  (((mongoose.models as unknown) as { User?: Model<IUser> }).User as Model<IUser>) ||
+  model<IUser>('User', userSchema)
 
 export default User

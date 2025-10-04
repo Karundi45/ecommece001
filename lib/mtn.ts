@@ -25,8 +25,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
       }
     );
-
-    const accessToken = tokenRes.data.access_token;
+    // axios returns unknown by default; assert the expected shape
+    const tokenData = tokenRes.data as { access_token?: string }
+    const accessToken = tokenData.access_token;
     const referenceId = crypto.randomUUID();
 
     // 🔑 Step 2: Request Payment
@@ -55,8 +56,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     return res.status(200).json({ success: true, referenceId });
-  } catch (err: any) {
-    console.error(err.response?.data || err.message);
-    return res.status(500).json({ error: "MTN MoMo payment failed" });
+  } catch (err) {
+    let message = 'MTN MoMo payment failed';
+    if (err instanceof Error) message = err.message;
+    console.error(message);
+    return res.status(500).json({ error: message });
   }
 }

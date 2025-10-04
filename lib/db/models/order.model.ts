@@ -1,5 +1,5 @@
 import { IOrderInput } from '@/types'
-import { Document, Model, model, models, Schema } from 'mongoose'
+import mongoose, { Document, Model, model, Schema } from 'mongoose'
 
 export interface IOrder extends Document, IOrderInput {
   _id: string
@@ -61,6 +61,7 @@ const orderSchema = new Schema<IOrder>(
 )
 
 const Order =
-  (models.Order as Model<IOrder>) || model<IOrder>('Order', orderSchema)
+  (((mongoose.models as unknown) as { Order?: Model<IOrder> }).Order as Model<IOrder>) ||
+  model<IOrder>('Order', orderSchema)
 
 export default Order

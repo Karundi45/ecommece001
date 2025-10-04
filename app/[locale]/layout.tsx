@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from 'next/font/google'
+import type { Metadata } from 'next'
 import '../globals.css'
 import ClientProviders from '@/components/shared/client-providers'
 import { getDirection } from '@/i18n-config'
@@ -19,7 +20,7 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const {
     site: { slogan, name, description, url },
   } = await getSetting()
@@ -37,7 +38,7 @@ export default async function AppLayout({
   params,
   children,
 }: {
-  params: { locale: string }
+  params: Promise<{ locale: string }>
   children: React.ReactNode
 }) {
   const setting = await getSetting()

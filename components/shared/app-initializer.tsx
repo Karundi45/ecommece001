@@ -9,7 +9,7 @@ export default function AppInitializer({
   setting: ClientSetting
   children: React.ReactNode
 }) {
-  const [rendered, setRendered] = useState(false)
+  const [rendered, setRendered] = useState(true)
 
   useEffect(() => {
     setRendered(true)

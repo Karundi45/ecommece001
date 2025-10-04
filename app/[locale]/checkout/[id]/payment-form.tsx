@@ -156,36 +156,11 @@ export default function OrderDetailsForm({
                 View Order
               </Button>
             )}
-            {paymentMethod === "MTN MoMo" && (
-           <MtnForm
-             totalPrice={totalPrice}
-             onPaymentSuccess={async () => {
-             // ✅ Continue placing the order after payment success
-              const res = await createOrder({
-              items,
-             shippingAddress,
-             expectedDeliveryDate: calculateFutureDate(
-             availableDeliveryDates[deliveryDateIndex!].daysToDeliver
-             ),
-            deliveryDateIndex,
-            paymentMethod,
-           itemsPrice,
-           shippingPrice,
-           taxPrice,
-          totalPrice,
-        });
+            {!isPaid && paymentMethod === "MTN Mobile Money" && (
+             <MtnForm totalPrice={order.totalPrice} orderId={order._id} />
+            )}
 
-      if (!res.success) {
-        toast({ description: res.message, variant: "destructive" });
-      } else {
-        toast({ description: "Order placed successfully!" });
-        clearCart();
-        router.push(`/checkout/${res.data?.orderId}`);
-      }
-    }}
-  />
-)}
-
+            
   
 
           </div>
@@ -256,4 +231,5 @@ export default function OrderDetailsForm({
       </div>
     </main>
   )
+  
 }

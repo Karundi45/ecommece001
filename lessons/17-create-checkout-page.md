@@ -23,6 +23,11 @@ export const AVAILABLE_PAYMENT_METHODS = [
     commission: 0,
     isDefault: true,
   },
+   {
+    name: 'MTN Mobile money',
+    commission: 0,
+    isDefault: true,
+  },
 ]
 export const DEFAULT_PAYMENT_METHOD =
   process.env.DEFAULT_PAYMENT_METHOD || 'PayPal'
@@ -45,6 +50,12 @@ export const AVAILABLE_DELIVERY_DATES = [
     daysToDeliver: 5,
     shippingPrice: 4.9,
     freeShippingMinPrice: 35,
+  },
+  {
+    name: 'TO Day',
+    daysToDeliver: 0,
+    shippingPrice: 12.0,
+    freeShippingMinPrice: 100,
   },
 ]
 ```

@@ -1,5 +1,5 @@
 import { IReviewInput } from '@/types'
-import { Document, Model, model, models, Schema } from 'mongoose'
+import mongoose, { Document, Model, model, Schema } from 'mongoose'
 
 export interface IReview extends Document, IReviewInput {
   _id: string
@@ -42,6 +42,7 @@ const reviewSchema = new Schema<IReview>(
 )
 
 const Review =
-  (models.Review as Model<IReview>) || model<IReview>('Review', reviewSchema)
+  (((mongoose.models as unknown) as { Review?: Model<IReview> }).Review as Model<IReview>) ||
+  model<IReview>('Review', reviewSchema)
 
 export default Review

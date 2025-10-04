@@ -1082,7 +1082,7 @@ As we continue to grow, our commitment to quality and service remains unwavering
 **Customer Support**
 For inquiries about orders, products, or account-related issues, contact our customer support team:
 - **Email:** support@example.com
-- **Phone:** +1 (123) 456-7890
+- **Phone:** +250 791367715
 - **Live Chat:** Available on our website from 9 AM to 6 PM (Monday to Friday).
 
 **Head Office**
@@ -1135,7 +1135,7 @@ We strive to ensure all product descriptions, pricing, and availability informat
 
 If you have questions or concerns, please reach out to us through our multiple contact options:
 - **Email:** support@example.com
-- **Phone:** +1 (123) 456-7890
+- **Phone:** +250 791367715
 - **Live Chat:** Available on our website for instant assistance
 
 We also provide helpful resources such as order tracking, product guides, and FAQs to assist you with common inquiries. Your satisfaction is our priority, and we’re here to resolve any issues quickly and efficiently. Thank you for choosing us!`,
@@ -1251,18 +1251,18 @@ We also provide helpful resources such as order tracking, product guides, and FA
         pageSize: 9,
       },
       site: {
-        name: 'NxtAmzn',
+        name: 'GOllira market place',
         description:
-          'NxtAmzn is a sample Ecommerce website built with Next.js, Tailwind CSS, and MongoDB.',
-        keywords: 'Next Ecommerce, Next.js, Tailwind CSS, MongoDB',
-        url: 'https://next-mongo-ecommerce-final.vercel.app',
+          'GOllira market place is a sample Ecommerce website built with Next.js, Tailwind CSS, and MongoDB.',
+        keywords: 'Ecommerce Market on Gollira , Next.js, Tailwind CSS, MongoDB',
+  url: 'http://localhost:3000',
         logo: '/icons/logo.svg',
         slogan: 'Spend less, enjoy more.',
-        author: 'Next Ecommerce',
-        copyright: '2000-2024, Next-Ecommerce.com, Inc. or its affiliates',
+        author: 'Ecommerce Market on Gollira ',
+        copyright: '2000-2024, Golliramarketplace.com, Inc. or its affiliates',
         email: 'admin@example.com',
-        address: '123, Main Street, Anytown, CA, Zip 12345',
-        phone: '+1 (123) 456-7890',
+        address: 'kigali, RN 1 loard Sourth, RWANDA, PoBOX 0000 kigali, Nyarugenge.',
+        phone: '+250 791367715',
       },
       carousels: [
         {
@@ -1298,6 +1298,7 @@ We also provide helpful resources such as order tracking, product guides, and FA
         },
         { name: 'Euro', code: 'EUR', symbol: '€', convertRate: 0.96 },
         { name: 'UAE Dirham', code: 'AED', symbol: 'AED', convertRate: 3.67 },
+        { name: 'Rwandan francs', code: 'FRW', symbol: 'FRW', convertRate: 1450 },
       ],
       defaultCurrency: 'USD',
       availablePaymentMethods: [
@@ -1324,6 +1325,12 @@ We also provide helpful resources such as order tracking, product guides, and FA
           daysToDeliver: 5,
           shippingPrice: 4.9,
           freeShippingMinPrice: 35,
+        },
+        {
+          name: 'TO Day',
+          daysToDeliver: 5,
+          shippingPrice: 9.67,
+          freeShippingMinPrice: 100,
         },
       ],
       defaultDeliveryDate: 'Next 5 Days',

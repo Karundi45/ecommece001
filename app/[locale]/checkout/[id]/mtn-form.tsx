@@ -1,103 +1,127 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Toast } from "@/components/ui/toast";
+import { useState } from "react"
+const COUNTRY_CODES = [
+  { code: "+250", label: "🇷🇼 Rwanda" },
+  { code: "+256", label: "🇺🇬 Uganda" },
+  { code: "+255", label: "🇹🇿 Tanzania" },
+  { code: "+237", label: "🇨🇲 Cameroon" },
+  { code: "+233", label: "🇬🇭 Ghana" },
+  { code: "+234", label: "🇳🇬 Nigeria" },
+  { code: "+225", label: "🇨🇮 Côte d'Ivoire" },
+  { code: "+226", label: "🇧🇫 Burkina Faso" },
+  { code: "+227", label: "🇳🇪 Niger" },
+  { code: "+228", label: "🇹🇬 Togo" },
+  { code: "+229", label: "🇧🇯 Benin" },
+  { code: "+230", label: "🇲🇺 Mauritius" },
+  { code: "+231", label: "🇱🇷 Liberia" },
+  { code: "+232", label: "🇸🇱 Sierra Leone" },
+  { code: "+243", label: "🇨🇩 DR Congo" },
+  { code: "+265", label: "🇲🇼 Malawi" },
+  { code: "+266", label: "🇱🇸 Lesotho" },
+  { code: "+267", label: "🇧🇼 Botswana" },
+  { code: "+268", label: "🇸🇿 Eswatini" },
+  // Add more as needed
+];
 
-export default function MtnForm({ totalPrice, onPaymentSuccess }: { totalPrice: number, onPaymentSuccess: () => void }) {
-  const [phone, setPhone] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast(); // fix: destructure toast
-  const router = useRouter();
+export default function MtnForm({
+  totalPrice,
+  orderId,
+}: {
+  totalPrice: number
+  orderId: string
+}) {
+  const [countryCode, setCountryCode] = useState(COUNTRY_CODES[0].code)
+  const [phoneNumber, setPhoneNumber] = useState("")
 
-  const handleMtnPayment = async () => {
-    if (!phone.startsWith("2507")) {
-      toast({
-        description: "Phone number must start with 2507...",
-        variant: "destructive",
-      });
-      return;
+  // Auto-detect country code if user types +250, +256, etc.
+  const handlePhoneInput = (val: string) => {
+    // Remove all non-digit and plus
+    let input = val.replace(/[^\d+]/g, "")
+    // If input starts with + and matches a country code, auto-select
+    const match = COUNTRY_CODES.find(opt => input.startsWith(opt.code))
+    if (match) {
+      setCountryCode(match.code)
+      // Remove country code from input for phone field
+      input = input.slice(match.code.length)
     }
+    // Only keep digits for phone number
+    setPhoneNumber(input.replace(/\D/g, ""))
+  }
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState<string>("")
 
-    setLoading(true);
+  // Simple phone validation: must be digits and 9-10 chars (after country code)
+  const validatePhone = (num: string) => /^\d{9,10}$/.test(num)
 
+  const handleMtnPay = async (): Promise<void> => {
+    setLoading(true)
+    setMessage("")
+    if (!validatePhone(phoneNumber)) {
+      setMessage("Please enter a valid phone number (9-10 digits, no spaces)")
+      setLoading(false)
+      return
+    }
     try {
-      // 1️⃣ Send payment request
-      const payRes = await fetch("/api/mtn/pay", {
+      const fullPhone = countryCode.replace("+", "") + phoneNumber
+      const res = await fetch("/api/payments/mtn", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: totalPrice.toString(),
-          phoneNumber: phone,
+          amount: totalPrice,
+          phoneNumber: fullPhone,
+          orderId,
         }),
-      });
-
-      const payData = await payRes.json();
-
-      if (!payData.success) {
-        toast({ description: "Failed to request payment", variant: "destructive" });
-        setLoading(false);
-        return;
-      }
-
-      // 2️⃣ Poll for status with max attempts
-      let status = "PENDING";
-      let attempts = 0;
-      const maxAttempts = 10;
-
-      while (status === "PENDING" && attempts < maxAttempts) {
-        const statusRes = await fetch("/api/mtn/status", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ referenceId: payData.referenceId }),
-        });
-
-        const data = await statusRes.json();
-        status = data.status;
-
-        if (status === "SUCCESSFUL") {
-          toast({ description: "Payment successful ✅" });
-          onPaymentSuccess();
-          setLoading(false);
-          return;
-        } else if (status === "FAILED") {
-          toast({ description: "Payment declined ❌", variant: "destructive" });
-          setLoading(false);
-          return;
-        }
-
-        await new Promise((r) => setTimeout(r, 3000));
-        attempts++;
-      }
-
-      if (status === "PENDING") {
-        toast({ description: "Payment still pending, try again later", variant: "destructive" });
-        setLoading(false);
+      })
+      const data = await res.json()
+      if (data.success) {
+        setMessage("Payment request sent. Approve it on your MTN phone.")
+      } else {
+        setMessage("Payment failed: " + data.message)
       }
     } catch (err) {
-      console.error(err);
-      toast({ description: "An error occurred. Please try again.", variant: "destructive" });
-      setLoading(false);
+      let errorMsg = 'Unknown error';
+      if (err instanceof Error) errorMsg = err.message;
+      setMessage("Error: " + errorMsg)
     }
-  };
+    setLoading(false)
+  }
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm font-medium">MTN MoMo Phone Number</label>
-      <input
-        type="tel"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        placeholder="2507xxxxxxx"
-        className="w-full rounded-md border px-3 py-2"
-      />
+      <label className="block text-sm font-medium mb-1">MTN MoMo Phone Number</label>
+      <div className="flex gap-2">
+        <select
+          value={countryCode}
+          onChange={e => setCountryCode(e.target.value)}
+          className="border rounded p-2 bg-white font-semibold min-w-[110px]"
+          aria-label="Country code"
+        >
+          {COUNTRY_CODES.map(opt => (
+            <option key={opt.code} value={opt.code}>{opt.label} ({opt.code})</option>
+          ))}
+        </select>
+        <input
+          type="tel"
+          inputMode="numeric"
+          pattern="[0-9]{9,10}"
+          maxLength={10}
+          minLength={9}
+          placeholder="7x xxx xxxx or +2507x..."
+          value={phoneNumber}
+          onChange={e => handlePhoneInput(e.target.value)}
+          className="flex-1 border p-2 rounded"
+        />
+      </div>
+      <div className="text-xs text-gray-500 mb-1">Include only digits after country code. Example: <b>7xxxxxxxx</b></div>
       <button
-        onClick={handleMtnPayment}
+        onClick={handleMtnPay}
         disabled={loading}
-        className="w-full rounded-md bg-yellow-500 py-2 font-semibold text-white hover:bg-yellow-600 disabled:opacity-50"
+        className="w-full bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded font-bold transition"
       >
         {loading ? "Processing..." : "Pay with MTN MoMo"}
       </button>
+      {message && <p className="text-sm mt-1 text-red-600">{message}</p>}
     </div>
-  );
+  )
 }

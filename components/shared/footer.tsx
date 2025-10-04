@@ -55,17 +55,17 @@ export default function Footer() {
             <h3 className='font-bold mb-2'>{t('Footer.Make Money with Us')}</h3>
             <ul className='space-y-2'>
               <li>
-                <Link href='/page/sell'>
+                <Link href='/page/sell-products'>
                   {t('Footer.Sell products on', { name: site.name })}
                 </Link>
               </li>
               <li>
-                <Link href='/page/become-affiliate'>
+                <Link href='/page/become-an-affiliate'>
                   {t('Footer.Become an Affiliate')}
                 </Link>
               </li>
               <li>
-                <Link href='/page/advertise'>
+                <Link href='/page/advertise-products'>
                   {t('Footer.Advertise Your Products')}
                 </Link>
               </li>

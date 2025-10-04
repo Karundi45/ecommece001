@@ -1,0 +1,31 @@
+# Query: NxtAmzn
+# ContextLines: 1
+
+7 results - 3 files
+
+nextjs-amazona-main\lessons\03-create-website-layout.md:
+   5     ```env
+   6:     NEXT_PUBLIC_APP_NAME=NxtAmzn
+   7      NEXT_PUBLIC_APP_SLOGAN=Spend less, enjoy more.
+
+  13     ```ts
+  14:    export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'NxtAmzn'
+  15     export const APP_SLOGAN =
+
+nextjs-amazona-main\lessons\36-make-website-multilingual.md:
+   246        site: {
+   247:         name: 'NxtA',
+   248          description:
+   249:           'NxtAmzn is a sample Ecommerce website built with Next.js, Tailwind CSS, and MongoDB.',
+   250          keywords: 'Next Ecommerce, Next.js, Tailwind CSS, MongoDB',
+
+  2289  -  process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+  2290: -export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'NxtAmzn'
+  2291  -export const APP_SLOGAN =
+
+nextjs-amazona-main\lib\data.ts:
+  1253        site: {
+  1254:         name: 'NxtAmzn',
+  1255          description:
+  1256:           'NxtAmzn is a sample Ecommerce website built with Next.js, Tailwind CSS, and MongoDB.',
+  1257          keywords: 'Next Ecommerce, Next.js, Tailwind CSS, MongoDB',

@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import data from '@/lib/data'
-import { connectToDatabase } from '.'
+import { connectToDatabase } from './index'
 import User from './models/user.model'
 import Product from './models/product.model'
 import Review from './models/review.model'
-import { cwd } from 'process'
-import { loadEnvConfig } from '@next/env'
 import Order from './models/order.model'
 import {
   calculateFutureDate,
@@ -17,7 +15,19 @@ import WebPage from './models/web-page.model'
 import Setting from './models/setting.model'
 import { OrderItem, IOrderInput, ShippingAddress } from '@/types'
 
-loadEnvConfig(cwd())
+// Try to load .env.local if dotenv is available. Use dynamic import so the
+// script doesn't crash when dotenv isn't installed in environments where
+// installing dev dependencies isn't possible.
+async function tryLoadDotenv() {
+  try {
+    const mod = await import('dotenv')
+    const dotenv = (mod && (mod as any).default) || mod
+    dotenv.config({ path: '.env.local' })
+  } catch {
+    // dotenv not available — continue with process.env only
+    console.warn('dotenv not available; continuing with process.env only')
+  }
+}
 
 const main = async () => {
   try {
@@ -81,9 +91,22 @@ const main = async () => {
       createdSetting,
       message: 'Seeded database successfully',
     })
+    // disconnect mongoose gracefully before exiting
+    try {
+      const mongoose = await import('mongoose')
+      await mongoose.disconnect()
+    } catch {
+      // ignore disconnect errors
+    }
     process.exit(0)
   } catch (error) {
     console.error(error)
+    try {
+      const mongoose = await import('mongoose')
+      await mongoose.disconnect()
+    } catch {
+      // ignore
+    }
     throw new Error('Failed to seed database')
   }
 }
@@ -212,4 +235,8 @@ export const calcDeliveryDateAndPriceForSeed = ({
   }
 }
 
-main()
+// ensure dotenv is attempted before running main()
+(async () => {
+  await tryLoadDotenv()
+  main()
+})()

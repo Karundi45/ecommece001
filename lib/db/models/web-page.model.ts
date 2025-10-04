@@ -1,5 +1,5 @@
 import { IWebPageInput } from '@/types'
-import { Document, Model, model, models, Schema } from 'mongoose'
+import mongoose, { Document, Model, model, Schema } from 'mongoose'
 
 export interface IWebPage extends Document, IWebPageInput {
   _id: string
@@ -34,7 +34,7 @@ const webPageSchema = new Schema<IWebPage>(
 )
 
 const WebPage =
-  (models.WebPage as Model<IWebPage>) ||
+  (((mongoose.models as unknown) as { WebPage?: Model<IWebPage> }).WebPage as Model<IWebPage>) ||
   model<IWebPage>('WebPage', webPageSchema)
 
 export default WebPage

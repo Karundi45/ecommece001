@@ -6,10 +6,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+
+// Minimal safe `useToast` implementation.
+// The previous implementation referenced an undefined `toast` and `ToastContext`.
+// Provide a no-op `showToast` so imports don't crash the build. If you have a
+// concrete toast implementation to wire up later, replace this with the real one.
 export const useToast = () => {
-  const { showToast } = toast(ToastContext);
-  return { showToast };
-};
+  const showToast = (options: { title?: string; description?: string } = {}) => {
+    // You can replace this with a real toast implementation that mounts a
+    // Toast component and shows it. For now we log to console to avoid runtime
+    // errors during builds and tests.
+    console.warn('useToast: showToast called with', options)
+  }
+  return { showToast }
+}
 
 const ToastProvider = ToastPrimitives.Provider
 

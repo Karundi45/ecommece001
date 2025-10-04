@@ -244,18 +244,18 @@ import { i18n } from '@/i18n-config'
         pageSize: 9,
       },
       site: {
-        name: 'NxtAmzn',
+        name: 'GOllira market place',
         description:
-          'NxtAmzn is a sample Ecommerce website built with Next.js, Tailwind CSS, and MongoDB.',
-        keywords: 'Next Ecommerce, Next.js, Tailwind CSS, MongoDB',
+          'GOllira market place is a sample Ecommerce website built with Next.js, Tailwind CSS, and MongoDB.',
+        keywords: 'Ecommerce Market on Gollira , Next.js, Tailwind CSS, MongoDB',
         url: 'https://next-mongo-ecommerce-final.vercel.app',
         logo: '/icons/logo.svg',
         slogan: 'Spend less, enjoy more.',
-        author: 'Next Ecommerce',
-        copyright: '2000-2024, Next-Ecommerce.com, Inc. or its affiliates',
+        author: 'Ecommerce Market on Gollira ',
+        copyright: '2000-2024, Golliramarketplace.com, Inc. or its affiliates',
         email: 'admin@example.com',
-        address: '123, Main Street, Anytown, CA, Zip 12345',
-        phone: '+1 (123) 456-7890',
+        address: 'kigali, RN 1 loard Sourth, RWANDA, PoBOX 0000 kigali, Nyarugenge.',
+        phone: '+250 791367715',
       },
       carousels: [
         {
@@ -317,6 +317,12 @@ import { i18n } from '@/i18n-config'
           daysToDeliver: 5,
           shippingPrice: 4.9,
           freeShippingMinPrice: 35,
+        },
+        {
+          name: 'TO Day ',
+          daysToDeliver: 0,
+          shippingPrice: 9.76,
+          freeShippingMinPrice: 100,
         },
       ],
       defaultDeliveryDate: 'Next 5 Days',
@@ -1651,7 +1657,7 @@ import { i18n } from '@/i18n-config'
           <Link href='/page/help'>{t('Footer.Help')}</Link>
 -          <p> © 2000-2024, {APP_NAME}, Inc. or its affiliates</p>
           <p> © {site.copyright}</p>
--          123, Main Street, Anytown, CA, Zip 12345 | +1 (123) 456-7890
+-          kigali, RN 1 loard Sourth, RWANDA, PoBOX 0000 kigali, Nyarugenge. | +250 791367715
           {site.address} | {site.phone}
 ```
 
@@ -2287,7 +2293,7 @@ import { getSetting } from './setting.actions'
 ```ts
 -export const SERVER_URL =
 -  process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
--export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'NxtAmzn'
+-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'GOllira market place'
 -export const APP_SLOGAN =
 -  process.env.NEXT_PUBLIC_APP_SLOGAN || 'Spend less, enjoy more.'
 -export const APP_DESCRIPTION =

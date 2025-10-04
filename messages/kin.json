@@ -102,14 +102,14 @@
     "Submitting": "Biroherezwa..."
   },
   "Cart": {
-    "Shopping Cart": "Igatebo ry’ibicuruzwa",
+    "Shopping Cart": "Agatebo gahahirwamo",
     "Price": "Igiciro",
     "Quantity": "Umubare",
-    "items": "ibintu",
-    "Your Shopping Cart is empty": "Igatebo kawe ririmo ubusa.",
+    "items": "icuruzwa",
+    "Your Shopping Cart is empty": "Agatebo kawe karimo ubusa.",
     "Your order qualifies for FREE Shipping": "ibyowaguze byemerewe koherezwa ku buntu.",
     "of eligible items to your order to qualify for FREE Shipping": "y’ibicuruzwa byemewe kugira ngo woherezwe ku buntu.",
-    "Continue shopping on": "Komeza kugura kuri <home>urupapuro rwa {name}</home>",
+    "Continue shopping on": "Komeza kugura kuri <home>paje ya {name} (ibanza)</home>",
     "Add": "Ongeramo",
     "Added to cart": "Byashyizwe mu gatebo",
     "Color": "Ibara",

@@ -3,7 +3,7 @@
 1. create .env.local
 
    ```env
-    NEXT_PUBLIC_APP_NAME=NxtAmzn
+    NEXT_PUBLIC_APP_NAME=GOllira market place
     NEXT_PUBLIC_APP_SLOGAN=Spend less, enjoy more.
     NEXT_PUBLIC_APP_DESCRIPTION=An Amazon clone built with Next.js and MongoDB
    ```
@@ -11,7 +11,7 @@
 2. lib/constants.ts
 
    ```ts
-   export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'NxtAmzn'
+   export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'GOllira market place'
    export const APP_SLOGAN =
      process.env.NEXT_PUBLIC_APP_SLOGAN || 'Spend less, enjoy more.'
    export const APP_DESCRIPTION =
@@ -252,7 +252,7 @@
               <p> © 2000-2024, {APP_NAME}, Inc. or its affiliates</p>
             </div>
             <div className='mt-8 flex justify-center text-sm text-gray-400'>
-              123, Main Street, Anytown, CA, Zip 12345 | +1 (123) 456-7890
+              kigali, RN 1 loard Sourth, RWANDA, PoBOX 0000 kigali, Nyarugenge. | +250 791367715
             </div>
           </div>
         </footer>
