@@ -1,1 +1,1 @@
-import { NextResponse } from "next/server"; export async function GET() { return NextResponse.json({ hasSubKey: !!process.env.MTN_SUBSCRIPTION_KEY, hasUserId: !!process.env.MTN_API_USER, hasApiKey: !!process.env.MTN_API_KEY }); }
+import { NextResponse } from "next/server"; export async function GET() { return NextResponse.json({ subKeyStart: process.env.MTN_SUBSCRIPTION_KEY?.substring(0, 3), subKeyLen: process.env.MTN_SUBSCRIPTION_KEY?.length, userIdLen: process.env.MTN_API_USER?.length, apiKeyLen: process.env.MTN_API_KEY?.length }); }
