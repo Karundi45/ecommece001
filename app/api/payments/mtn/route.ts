@@ -34,7 +34,7 @@ export async function POST(req: Request) {
       `${BASE_URL}/collection/v1_0/requesttopay`,
       {
         amount,
-        currency: "RWF",
+        currency: "EUR", // Sandbox only supports EUR
         externalId: orderId,
         payer: { partyIdType: "MSISDN", partyId: phoneNumber },
         payerMessage: "Payment for order " + orderId,
