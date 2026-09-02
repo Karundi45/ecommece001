@@ -67,6 +67,14 @@
     "zod": "^3.24.1",
     "zustand": "^5.0.2"
   },
+  "overrides": {
+    "next-auth": {
+      "next": "$next"
+    },
+    "next-intl": {
+      "next": "$next"
+    }
+  },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/bcryptjs": "^2.4.6",
