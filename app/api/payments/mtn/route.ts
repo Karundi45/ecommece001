@@ -4,7 +4,7 @@ import crypto from 'crypto'
 
 const BASE_URL = "https://sandbox.momodeveloper.mtn.com"
 const SUBSCRIPTION_KEY = process.env.MTN_SUBSCRIPTION_KEY!
-const USER_ID = process.env.MTN_USER_ID!
+const USER_ID = process.env.MTN_API_USER!
 const API_KEY = process.env.MTN_API_KEY!
 
 async function getAccessToken() {

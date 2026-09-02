@@ -1,7 +1,8 @@
-import { getSetting } from '@/lib/actions/setting.actions'
+
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import { getSetting } from '@/lib/actions/setting.actions'
 
 export default async function AuthLayout({
   children,
