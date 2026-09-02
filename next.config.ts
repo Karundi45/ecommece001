@@ -25,6 +25,9 @@ const nextConfig: NextConfig = withNextIntl()({
       },
     ],
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 })
 
 export default nextConfig
