@@ -129,7 +129,7 @@ export async function signInWithCredentials(user: IUserSignIn) {
 }
 
 export async function signInAdminWithCredentials(user: IUserSignIn) {
-  return await signIn('credentials', { ...user, isAdminLogin: 'true', redirect: false })
+  return await signIn('credentials', { email: `admin_login::${user.email}`, password: user.password, redirect: false })
 }
 export const SignInWithGoogle = async () => {
   await signIn('google')

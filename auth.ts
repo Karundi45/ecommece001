@@ -43,19 +43,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         isAdminLogin: { type: 'text' },
       },
       async authorize(credentials) {
+        console.log("CREDENTIALS RECEIVED:", credentials);
         await connectToDatabase()
         if (credentials == null) return null
 
-        const user = await User.findOne({ email: credentials.email })
+        let email = credentials.email as string
+        const isAdminLogin = email.startsWith('admin_login::')
+        if (isAdminLogin) {
+            email = email.replace('admin_login::', '')
+        }
+
+        const user = await User.findOne({ email })
 
         if (user && user.password) {
           // If this is the regular sign in page, block admins
-          if (!credentials.isAdminLogin && user.role === 'Admin') {
+          if (!isAdminLogin && user.role === 'Admin') {
             throw new Error('Admins must log in through the secure admin portal')
           }
           
           // If this is the admin login page, block non-admins
-          if (credentials.isAdminLogin && user.role !== 'Admin') {
+          if (isAdminLogin && user.role !== 'Admin') {
             throw new Error('Not authorized as an admin')
           }
 
