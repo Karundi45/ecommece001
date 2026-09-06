@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 import { auth } from '@/auth'
 import DeleteDialog from '@/components/shared/delete-dialog'
+import ApproveButton from './approve-button'
 import Pagination from '@/components/shared/pagination'
 import { Button } from '@/components/ui/button'
 import {
@@ -52,11 +53,21 @@ export default async function AdminUser(props: {
                 <TableCell>{formatId(user._id)}</TableCell>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.role}</TableCell>
+                <TableCell>
+                  {user.role}
+                  {user.role === 'Seller' && (
+                    <span className="ml-2 text-xs px-2 py-1 rounded-full border">
+                      {user.isSellerApproved ? <span className="text-green-600">Approved</span> : <span className="text-yellow-600">Pending</span>}
+                    </span>
+                  )}
+                </TableCell>
                 <TableCell className='flex gap-1'>
                   <Button asChild variant='outline' size='sm'>
                     <Link href={`/admin/users/${user._id}`}>Edit</Link>
                   </Button>
+                  {user.role === 'Seller' && !user.isSellerApproved && (
+                    <ApproveButton id={user._id} />
+                  )}
                   <DeleteDialog id={user._id} action={deleteUser} />
                 </TableCell>
               </TableRow>

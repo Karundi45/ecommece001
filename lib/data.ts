@@ -1255,7 +1255,7 @@ We also provide helpful resources such as order tracking, product guides, and FA
         description:
           'GOllira market place is a sample Ecommerce website built with Next.js, Tailwind CSS, and MongoDB.',
         keywords: 'Ecommerce Market on Gollira , Next.js, Tailwind CSS, MongoDB',
-  url: 'http://localhost:3000',
+  url: 'https://ecommece001-pi.vercel.app',
         logo: '/icons/logo.svg',
         slogan: 'Spend less, enjoy more.',
         author: 'Ecommerce Market on Gollira ',
@@ -1290,23 +1290,24 @@ We also provide helpful resources such as order tracking, product guides, and FA
       })),
       defaultLanguage: 'en-US',
       availableCurrencies: [
+        { name: 'Rwandan francs', code: 'FRW', symbol: 'FRW', convertRate: 1 },
         {
           name: 'United States Dollar',
           code: 'USD',
           symbol: '$',
-          convertRate: 1,
+          convertRate: 0.0007,
         },
-        { name: 'Euro', code: 'EUR', symbol: '€', convertRate: 0.96 },
-        { name: 'UAE Dirham', code: 'AED', symbol: 'AED', convertRate: 3.67 },
-        { name: 'Rwandan francs', code: 'FRW', symbol: 'FRW', convertRate: 1450 },
+        { name: 'Euro', code: 'EUR', symbol: '€', convertRate: 0.00065 },
+        { name: 'UAE Dirham', code: 'AED', symbol: 'AED', convertRate: 0.0025 },
       ],
-      defaultCurrency: 'USD',
+      defaultCurrency: 'FRW',
       availablePaymentMethods: [
-        { name: 'PayPal', commission: 0 },
-        { name: 'Stripe', commission: 0 },
+        { name: 'MTN Mobile Money', commission: 0 },
         { name: 'Cash On Delivery', commission: 0 },
+        { name: 'Stripe', commission: 0 },
+        { name: 'PayPal', commission: 0 },
       ],
-      defaultPaymentMethod: 'PayPal',
+      defaultPaymentMethod: 'MTN Mobile Money',
       availableDeliveryDates: [
         {
           name: 'Tomorrow',

@@ -33,6 +33,28 @@ export async function registerUser(userSignUp: IUserSignUp) {
   }
 }
 
+export async function registerSeller(userSignUp: IUserSignUp) {
+  try {
+    const user = await UserSignUpSchema.parseAsync({
+      name: userSignUp.name,
+      email: userSignUp.email,
+      password: userSignUp.password,
+      confirmPassword: userSignUp.confirmPassword,
+    })
+
+    await connectToDatabase()
+    await User.create({
+      ...user,
+      role: 'Seller',
+      isSellerApproved: false,
+      password: await bcrypt.hash(user.password, 5),
+    })
+    return { success: true, message: 'Seller application submitted successfully' }
+  } catch (error) {
+    return { success: false, error: formatError(error) }
+  }
+}
+
 // DELETE
 
 export async function deleteUser(id: string) {
@@ -88,8 +110,26 @@ export async function updateUserName(user: IUserName) {
   }
 }
 
+export async function approveSeller(userId: string) {
+  try {
+    await connectToDatabase()
+    const user = await User.findById(userId)
+    if (!user) throw new Error('User not found')
+    user.isSellerApproved = true
+    await user.save()
+    revalidatePath('/admin/users')
+    return { success: true, message: 'Seller approved successfully' }
+  } catch (error) {
+    return { success: false, message: formatError(error) }
+  }
+}
+
 export async function signInWithCredentials(user: IUserSignIn) {
   return await signIn('credentials', { ...user, redirect: false })
+}
+
+export async function signInAdminWithCredentials(user: IUserSignIn) {
+  return await signIn('credentials', { ...user, isAdminLogin: 'true', redirect: false })
 }
 export const SignInWithGoogle = async () => {
   await signIn('google')

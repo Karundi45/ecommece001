@@ -4,15 +4,25 @@ import type { NextAuthConfig } from 'next-auth'
 export default {
   providers: [],
   callbacks: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     authorized({ request, auth }: any) {
-      const protectedPaths = [
-        /\/checkout(\/.*)?/,
-        /\/account(\/.*)?/,
-        /\/admin(\/.*)?/,
-      ]
       const { pathname } = request.nextUrl
-      if (protectedPaths.some((p) => p.test(pathname))) return !!auth
+
+      // Protect admin routes
+      if (pathname.match(/\/admin(\/.*)?/)) {
+        return !!auth && auth.user?.role === 'Admin'
+      }
+
+      // Protect seller routes
+      if (pathname.match(/\/seller(\/.*)?/)) {
+        return !!auth && auth.user?.role === 'Seller'
+      }
+
+      // Protect user routes
+      const protectedPaths = [/\/checkout(\/.*)?/, /\/account(\/.*)?/]
+      if (protectedPaths.some((p) => p.test(pathname))) {
+        return !!auth
+      }
+
       return true
     },
   },

@@ -28,6 +28,7 @@ export const ReviewInputSchema = z.object({
 })
 
 export const ProductInputSchema = z.object({
+  seller: MongoId.optional(),
   name: z.string().min(3, 'Name must be at least 3 characters'),
   slug: z.string().min(3, 'Slug must be at least 3 characters'),
   category: z.string().min(1, 'Category is required'),
@@ -171,6 +172,7 @@ export const UserInputSchema = z.object({
   image: z.string().optional(),
   emailVerified: z.boolean(),
   role: UserRole,
+  isSellerApproved: z.boolean().optional(),
   password: Password,
   paymentMethod: z.string().min(1, 'Payment method is required'),
   address: z.object({

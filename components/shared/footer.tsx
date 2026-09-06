@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 import { Button } from '@/components/ui/button'
+import BottomNavigation from './header/bottom-navigation'
 import useSettingStore from '@/hooks/use-setting-store'
 import { Select, SelectContent, SelectItem, SelectTrigger } from '../ui/select'
 
@@ -166,6 +167,7 @@ export default function Footer() {
           {site.address} | {site.phone}
         </div>
       </div>
+      <BottomNavigation />
     </footer>
   )
 }

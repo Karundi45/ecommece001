@@ -13,6 +13,7 @@ declare module 'next-auth' {
   interface Session {
     user: {
       role: string
+      isSellerApproved?: boolean
     } & DefaultSession['user']
   }
 }
@@ -39,6 +40,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           type: 'email',
         },
         password: { type: 'password' },
+        isAdminLogin: { type: 'text' },
       },
       async authorize(credentials) {
         await connectToDatabase()
@@ -47,6 +49,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const user = await User.findOne({ email: credentials.email })
 
         if (user && user.password) {
+          // If this is the regular sign in page, block admins
+          if (!credentials.isAdminLogin && user.role === 'Admin') {
+            throw new Error('Admins must log in through the secure admin portal')
+          }
+          
+          // If this is the admin login page, block non-admins
+          if (credentials.isAdminLogin && user.role !== 'Admin') {
+            throw new Error('Not authorized as an admin')
+          }
+
           const isMatch = await bcrypt.compare(
             credentials.password as string,
             user.password
@@ -57,6 +69,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               name: user.name,
               email: user.email,
               role: user.role,
+              isSellerApproved: user.isSellerApproved,
             }
           }
         }
@@ -76,6 +89,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
         token.name = user.name || user.email!.split('@')[0]
         token.role = (user as { role: string }).role
+        token.isSellerApproved = (user as { isSellerApproved?: boolean }).isSellerApproved
       }
 
       if (session?.user?.name && trigger === 'update') {
@@ -86,6 +100,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     session: async ({ session, user, trigger, token }) => {
       session.user.id = token.sub as string
       session.user.role = token.role as string
+      session.user.isSellerApproved = token.isSellerApproved as boolean | undefined
       session.user.name = token.name
       if (trigger === 'update') {
         session.user.name = user.name

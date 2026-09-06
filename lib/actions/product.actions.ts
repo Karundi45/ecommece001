@@ -8,14 +8,22 @@ import { ProductInputSchema, ProductUpdateSchema } from '../validator'
 import { IProductInput } from '@/types'
 import { z } from 'zod'
 import { getSetting } from './setting.actions'
+import { auth } from '@/auth'
 
 // CREATE
 export async function createProduct(data: IProductInput) {
   try {
     const product = ProductInputSchema.parse(data)
+    const session = await auth()
+    
+    if (session?.user.role === 'Seller') {
+      product.seller = session.user.id
+    }
+
     await connectToDatabase()
     await Product.create(product)
     revalidatePath('/admin/products')
+    revalidatePath('/seller/products')
     return {
       success: true,
       message: 'Product created successfully',
@@ -62,17 +70,19 @@ export async function getProductById(productId: string) {
   return JSON.parse(JSON.stringify(product)) as IProduct
 }
 
-// GET ALL PRODUCTS FOR ADMIN
+// GET ALL PRODUCTS FOR ADMIN/SELLER
 export async function getAllProductsForAdmin({
   query,
   page = 1,
   sort = 'latest',
   limit,
+  sellerId,
 }: {
   query: string
   page?: number
   sort?: string
   limit?: number
+  sellerId?: string
 }) {
   await connectToDatabase()
 
@@ -80,7 +90,7 @@ export async function getAllProductsForAdmin({
     common: { pageSize },
   } = await getSetting()
   limit = limit || pageSize
-  const queryFilter =
+  const queryFilter: any =
     query && query !== 'all'
       ? {
           name: {
@@ -89,6 +99,10 @@ export async function getAllProductsForAdmin({
           },
         }
       : {}
+      
+  if (sellerId) {
+    queryFilter.seller = sellerId
+  }
 
   const order: Record<string, 1 | -1> =
     sort === 'best-selling'

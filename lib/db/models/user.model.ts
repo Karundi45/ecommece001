@@ -3,6 +3,7 @@ import mongoose, { Document, Model, model, Schema } from 'mongoose'
 
 export interface IUser extends Document, IUserInput {
   _id: string
+  isSellerApproved?: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -12,6 +13,7 @@ const userSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     role: { type: String, required: true, default: 'User' },
+    isSellerApproved: { type: Boolean, default: false },
     password: { type: String },
     image: { type: String },
     emailVerified: { type: Boolean, default: false },
