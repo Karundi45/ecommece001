@@ -13,7 +13,8 @@ const publicPages = [
   '/cart/(.*)',
   '/product/(.*)',
   '/page/(.*)',
-  // (/secret requires auth)
+  '/secret-admin-login',
+  '/seller-register'
 ]
 
 const intlMiddleware = createMiddleware(routing)
