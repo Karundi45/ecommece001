@@ -36,8 +36,12 @@ export const ProductInputSchema = z.object({
   brand: z.string().min(1, 'Brand is required'),
   description: z.string().min(1, 'Description is required'),
   isPublished: z.boolean(),
-  price: Price('Price'),
-  listPrice: Price('List price'),
+  price: Price('Price')
+    .refine((val) => val >= 1, 'Price must be at least 1')
+    .refine((val) => val <= 5000, 'Price must be at most 5000'),
+  listPrice: Price('List price')
+    .refine((val) => val >= 0, 'List price must be at least 0')
+    .refine((val) => val <= 5000, 'List price must be at most 5000'),
   countInStock: z.coerce
     .number()
     .int()
