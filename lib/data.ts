@@ -1290,15 +1290,10 @@ We also provide helpful resources such as order tracking, product guides, and FA
       })),
       defaultLanguage: 'en-US',
       availableCurrencies: [
-        { name: 'Rwandan francs', code: 'FRW', symbol: 'FRW', convertRate: 1 },
-        {
-          name: 'United States Dollar',
-          code: 'USD',
-          symbol: '$',
-          convertRate: 0.0007,
-        },
-        { name: 'Euro', code: 'EUR', symbol: '€', convertRate: 0.00065 },
-        { name: 'UAE Dirham', code: 'AED', symbol: 'AED', convertRate: 0.0025 },
+        { name: 'United States Dollar', code: 'USD', symbol: '$', convertRate: 1 },
+        { name: 'Rwandan francs', code: 'FRW', symbol: 'FRW', convertRate: 1350 },
+        { name: 'Euro', code: 'EUR', symbol: '€', convertRate: 0.92 },
+        { name: 'UAE Dirham', code: 'AED', symbol: 'AED', convertRate: 3.67 },
       ],
       defaultCurrency: 'FRW',
       availablePaymentMethods: [
